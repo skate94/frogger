@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Frogger Jr.</title>
+    <style type="text/css">
+        #canvas-container {text-align: center;}
+        canvas {border: 3px solid black;}
+    </style>
+    <script type="text/javascript">
+        //Set up canvas and image positions
+        var ctx;
+        var canvas;
+        var interval = 10;
+        var frogx = 350;
+        var frogy = 550;
+        var pcx = 800;
+        var bcx = 1000;
+        var rcx = -100;
+        var bikex = 800;
+        var score = 0;
+        var lives = 3;
+        var i = 0;
+
+        //All pictures
+        var background = new Image();
+        background.src = "images/froggerbgk.png";
+        var frog = new Image();
+        frog.src = "images/frog.png";
+        var racecar = new Image();
+        racecar.src = "images/racecar.png";
+        var policecar = new Image();
+        policecar.src = "images/policecar.png";
+        var bluecar = new Image();
+        bluecar.src = "images/bluecar.png";
+        var bicycle = new Image();
+        bicycle.src = "images/bicycle.png";
+
+        //Key Down events, moves frog around screen
+        function onKeyDown(evt){
+            switch (evt.keyCode){
+                case 13: //Enter
+                    frogy = 550;
+                    frogx = 350;
+                    i = 0;
+                    break;
+                case 37: //left
+                    if (frogx > 10){
+                        frogx -= 20;
+                    }
+                    break;
+                case 38: //up
+                    if (frogy > 0){
+                        frogy -= 20;
+                    }
+                    break;
+                case 39: //right
+                    if (frogx < 730){
+                        frogx += 20;
+                    }
+                    break;
+                case 40: //down
+                    if (frogy < 550){
+                        frogy += 20;
+                    }
+                    break;
+            }
+        }
+
+        function moveObstacles(){
+
+            //draw police car
+            ctx.drawImage(policecar, pcx, 50);
+            if(pcx > -75){
+                pcx = pcx - 7;
+            } else{
+                pcx = 800;
+            }
+
+            //draw blue car
+            ctx.drawImage(bluecar, bcx, 90);
+            if(bcx > -75){
+                bcx = bcx - 5;
+            } else{
+                bcx = 1000;
+            }
+
+            //draw racecar
+            ctx.drawImage(racecar, rcx, 330);
+            if(rcx < 1000){
+                rcx = rcx + 8;
+            } else{
+                rcx = 0;
+            }
+
+            //draw bike
+            ctx.drawImage(bicycle, bikex, 450);
+            if(bikex > -50){
+                bikex = bikex - 3;
+            } else{
+                bikex = 800;
+            }
+        }
+
+        function checkForWin(){
+            if(frogy <= 50){
+                //Add score
+                if(i < 1) {
+                    score = score + 100;
+                    i = i + 1;
+                }
+                //Display win message
+                ctx.fillStyle = "#FFFFFF";
+                ctx.beginPath();
+                ctx.rect(225, 225, 400, 100);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                ctx.lineWidth = "6";
+                ctx.strokeStyle = "#009933";
+                ctx.rect(225, 225, 400, 100);
+                ctx.stroke();
+                ctx.fillStyle = "#009933";
+                ctx.font = "50px Impact";
+                ctx.fillText("Congratulations!", 250, 290);
+            }
+        }
+
+        function detectCollisions(){
+            if((frogy >= 75) && (frogy <= 100) && (Math.abs(frogx - pcx) < 10)){
+                frogy = 550;
+                if(lives > 0){
+                    lives = lives - 1;
+                }
+            }
+            if((frogy >= 100) && (frogy <= 160) && (Math.abs(frogx - bcx) < 10)){
+                frogy = 550;
+                if(lives > 0){
+                    lives = lives - 1;
+                }
+            }
+            if((frogy >= 250) && (frogy <= 375) && (Math.abs(frogx - rcx) < 10)){
+                frogy = 550;
+                if(lives > 0){
+                    lives = lives - 1;
+                }
+            }
+            if((frogy >= 400) && (frogy <= 520) && (Math.abs(frogx - bikex) < 10)){
+                frogy = 550;
+                if(lives > 0){
+                    lives = lives - 1;
+                }
+            }
+        }
+
+        function checkForLoss(){
+            if(lives < 1){
+                //Display death message
+                ctx.fillStyle = "#FFFFFF";
+                ctx.beginPath();
+                ctx.rect(225, 225, 400, 100);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                ctx.lineWidth = "6";
+                ctx.strokeStyle = "#CC0000";
+                ctx.rect(225, 225, 400, 100);
+                ctx.stroke();
+                ctx.fillStyle = "#CC0000";
+                ctx.font = "50px Impact";
+                ctx.fillText("Game Over :(", 300, 290);
+            }
+        }
+
+        //Initializes page
+        function init(){
+            ctx = document.getElementById('canvas').getContext('2d');
+            canvas = document.getElementById('canvas');
+
+            window.addEventListener('keydown', onKeyDown, true);
+
+
+            setInterval(draw, interval);
+        }
+
+        //Draw function
+        function draw(){
+            ctx.clearRect(0, 0, 600, 800);
+            ctx.drawImage(background, 0, 0);
+            ctx.drawImage(frog, frogx, frogy);
+            ctx.fillStyle = "#FFFFFF";
+            ctx.font = "20px Helvetica"
+            ctx.fillText("Score: " + score, 25, 580);
+            ctx.fillText("Lives: " + lives, 700, 580);
+            moveObstacles();
+            detectCollisions();
+            checkForWin();
+            checkForLoss();
+
+
+        }
+
+
+    </script>
+</head>
+<body onload = "init()">
+    <div id="canvas-container">
+    <canvas id="canvas" width="800" height="600">
+        Your browser does not support the canvas element.
+    </canvas>
+    </div>
+</body>
+</html>
