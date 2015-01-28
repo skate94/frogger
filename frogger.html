@@ -18,6 +18,8 @@
         var bcx = 1000;
         var rcx = -100;
         var bikex = 800;
+
+        //Set starting score and starting lives
         var score = 0;
         var lives = 3;
         var i = 0;
@@ -39,7 +41,7 @@
         //Key Down events, moves frog around screen
         function onKeyDown(evt){
             switch (evt.keyCode){
-                case 13: //Enter
+                case 13: //Enter; reset to start
                     frogy = 550;
                     frogx = 350;
                     i = 0;
@@ -67,6 +69,7 @@
             }
         }
 
+        //Moves cars and bike across canvas
         function moveObstacles(){
 
             //draw police car
@@ -102,6 +105,7 @@
             }
         }
 
+        //Checks to see if player is in winning position
         function checkForWin(){
             if(frogy <= 50){
                 //Add score
@@ -126,25 +130,30 @@
             }
         }
 
+        //Detects collisions with car or bike
         function detectCollisions(){
+            //Collision with police car; subtract life, start over
             if((frogy >= 75) && (frogy <= 100) && (Math.abs(frogx - pcx) < 10)){
                 frogy = 550;
                 if(lives > 0){
                     lives = lives - 1;
                 }
             }
+            //Collision with blue car; subtract life, start over
             if((frogy >= 100) && (frogy <= 160) && (Math.abs(frogx - bcx) < 10)){
                 frogy = 550;
                 if(lives > 0){
                     lives = lives - 1;
                 }
             }
+            //Collision with racecar; subtract life, start over
             if((frogy >= 250) && (frogy <= 375) && (Math.abs(frogx - rcx) < 10)){
                 frogy = 550;
                 if(lives > 0){
                     lives = lives - 1;
                 }
             }
+            //Collision with bike; subtract life, start over
             if((frogy >= 400) && (frogy <= 520) && (Math.abs(frogx - bikex) < 10)){
                 frogy = 550;
                 if(lives > 0){
@@ -153,6 +162,7 @@
             }
         }
 
+        //Checks to see if player has lost based on # of lives
         function checkForLoss(){
             if(lives < 1){
                 //Display death message
